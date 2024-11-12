@@ -1,2 +1,2 @@
 #!/bin/bash
-./bitcoin-cli getblockhash 654321
+bitcoin-cli getblockhash 654321
