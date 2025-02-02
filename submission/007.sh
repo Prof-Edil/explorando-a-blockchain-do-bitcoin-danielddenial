@@ -1,9 +1,9 @@
 #!/bin/bash
 
-Hash=$(bitcoin-cli getblockhash 123321)
-Block=$(bitcoin-cli getblock $Hash | jq -r '.tx[]')
+hash=$(bitcoin-cli getblockhash 123321)
+block=$(bitcoin-cli getblock $hash | jq -r '.tx[]')
 
-for txid in $Block; do
+for txid in $block; do
 
   tx=$(bitcoin-cli getrawtransaction $txid true)
   vout_count=$(echo "$tx" | jq '.vout | length')
