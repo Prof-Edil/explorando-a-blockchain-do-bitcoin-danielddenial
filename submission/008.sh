@@ -11,8 +11,7 @@ if [ -z "$witness" ]; then
   exit 1
 fi
 
-key1=$(echo "$witness" | cut -c 5-70)
-key2=$(echo "$witness" | cut -c 85-150)
+key=$(echo "$witness" | cut -c 5-70)
 
-echo "$key1"
-echo "$key2"
+echo "$key"
+
