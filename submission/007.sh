@@ -1,20 +1,21 @@
 #!/bin/bash
 
-hash_123321=$(bitcoin-cli getblockhash 123321)
+Hash=$(./bitcoin-cli getblockhash 123321)
+Block=$(./bitcoin-cli getblock $Hash | jq -r '.tx[]')
 
-for txid in $(bitcoin-cli getblock $hash_123321 | jq -r '.tx[]'); do
-    bitcoin-cli getrawtransaction $txid true | jq -c '.vout[]' | while read output; do
-        vout_index=$("$output" | jq -r '.n')
-        spent=$(bitcoin-cli gettxout $txid $vout_index)
+for txid in $Block; do
 
-        if [ -n "$spent" ]; then
-            address=$("$output" | jq -r '.scriptPubKey.addresses[0]')
-            echo "$address"
-            break 2
-        fi
-    done
+  tx=$(./bitcoin-cli getrawtransaction $txid true)
+  vout_count=$(echo "$tx" | jq '.vout | length')
+
+  for (( i=0; i<$vout_count; i++ )); do
+    address=$(./bitcoin-cli gettxout $txid $i)
+
+    if [[ ! -z "$address" ]]; then
+      echo $address | jq -r '.scriptPubKey.address'
+      exit 0
+    fi
+
+  done
+
 done
-
-
-
-
